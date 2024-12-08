@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <script src="index.js" defer></script>
+  <title>Time Tracking Dashboard</title>
+</head>
+<body>
+  <!-- Authentication Section -->
+  <div id="auth-container">
+    <!-- Registration Form -->
+    <form id="registerForm">
+      <h2>Register</h2>
+      <input type="text" id="name" placeholder="Name" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Register</button>
+    </form>
+    <!-- Login Form -->
+    <form id="loginForm" style="display: none;">
+      <h2>Login</h2>
+      <input type="email" id="loginEmail" placeholder="Email" required>
+      <input type="password" id="loginPassword" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div id="dashboard" style="display: none;">
+    <div class="container">
+      <header>
+        <div class="profile">
+          <img src="./images/image-jeremy.png" alt="Jeremy">
+          <section class="profile__text">
+            <p>Report for</p>
+            <h1>Jeremy Robson</h1>
+          </section>
+        </div>
+        <div class="nav">
+          <button type="button" class="btn daily-btn">Daily</button>
+          <button type="button" class="btn weekly-btn active">Weekly</button>
+          <button type="button" class="btn monthly-btn">Monthly</button>
+        </div>
+      </header>
+      <main></main>
+      <div class="toggle-container">
+        <span>Light</span>
+        <div class="toggle">
+          <div class="slider"></div>
+        </div>
+        <span>Dark</span>
+      </div>
+    </div>
+    <footer class="attribution">
+      Challenge by <a href="https://www.frontendmentor.io/challenges/time-tracking-dashboard-UIQ7167Jw" target="_blank" rel="noopener">Frontend Mentor</a>. 
+      Coded by Priyam.
+    </footer>
+    <button id="logout">Logout</button>
+  </div>
+
+  <!-- Firebase Initialization -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJXkC3E8ed_Y5vFaLk1wU0DcV_eBm-znA",
+      authDomain: "time-tracking-dashboard-56851.firebaseapp.com",
+      projectId: "time-tracking-dashboard-56851",
+      storageBucket: "time-tracking-dashboard-56851.firebasestorage.app",
+      messagingSenderId: "29870144849",
+      appId: "1:29870144849:web:7d39fde7196b732e87a770",
+      measurementId: "G-GX7QK6FWJ8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const registerForm = document.getElementById('registerForm');
+    const loginForm = document.getElementById('loginForm');
+    const dashboard = document.getElementById('dashboard');
+    const authContainer = document.getElementById('auth-container');
+
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert(`Registration successful, Welcome ${name}!`);
+          registerForm.style.display = "none";
+          loginForm.style.display = "block";
+        })
+        .catch((error) => alert(error.message));
+    });
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Login successful!");
+          authContainer.style.display = "none";
+          dashboard.style.display = "block";
+        })
+        .catch((error) => alert(error.message));
+    });
+
+    document.getElementById('logout').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        alert("Logged out!");
+        authContainer.style.display = "block";
+        dashboard.style.display = "none";
+      });
+    });
+  </script>
+</body>
+</html>
